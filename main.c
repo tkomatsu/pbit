@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
-#include <unistd.h>
 
 static void	make_bin(uint64_t n, char *box, int size, int is_negative)
 {
