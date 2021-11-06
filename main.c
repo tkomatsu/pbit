@@ -19,7 +19,8 @@ static void	make_bin(uint64_t n, char *box, int size, int is_negative)
 		box[i++] = !!(n & mask) + '0';
 		mask >>= 1;
 	}
-	box[0] = is_negative + '0';
+	if (is_negative)
+		box[0] = '1';
 	box[i] = '\0';
 }
 
