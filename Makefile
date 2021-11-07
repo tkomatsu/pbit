@@ -1,4 +1,4 @@
-NAME = putbin
+NAME = bit
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -O2
 RM = rm -fr

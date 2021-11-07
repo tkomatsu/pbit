@@ -30,9 +30,9 @@ int	ft_getsize(uint64_t n)
 	if (n <= UINT16_MAX)
 		return (sizeof(int16_t) * CHAR_BIT);
 	else if (n <= UINT32_MAX)
-		return (sizeof(int32_t)* CHAR_BIT);
+		return (sizeof(int32_t) * CHAR_BIT);
 	else
-		return (sizeof(int64_t)* CHAR_BIT);
+		return (sizeof(int64_t) * CHAR_BIT);
 }
 
 static void	ft_putbin(uint64_t n, int is_negative)
@@ -66,22 +66,15 @@ static uint64_t	ft_labs(int64_t n)
 	return (u);
 }
 
-int main(int argc, char **argv)
+static void	run(char *arg)
 {
 	int64_t		res;
 	uint64_t	abs;
 	char		*error;
 	const char	*message = "invalid argument\n";
 
-	if (ft_labs(LLONG_MIN) == ft_labs(LLONG_MAX))
-		exit(2);
 	errno = 0;
-	if (argc != 2)
-	{
-		fprintf(stderr, "%s", message);
-		return (1);
-	}
-	res = strtoll(argv[1], &error, 10);
+	res = strtoll(arg, &error, 10);
 	if (errno || *error)
 	{
 		fprintf(stderr, "%s", message);
@@ -89,4 +82,35 @@ int main(int argc, char **argv)
 	}
 	abs = ft_labs(res);
 	ft_putbin(abs, res < 0);
+}
+
+static int	help(char *cmd)
+{
+	printf("Usage: %s [NUMBERS]...\n", cmd);
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	char	*line;
+	size_t	linecap;
+	int		i;
+
+	if (argc == 2 && !strcmp(argv[1], "-h"))
+		return (help(argv[0]));
+	if (ft_labs(LLONG_MIN) == ft_labs(LLONG_MAX))
+		exit(2);
+	line = NULL;
+	linecap = 0;
+	if (argc == 1)
+	{
+		(void)getline(&line, &linecap, stdin);
+		run(strtok(line, "\t\n "));
+	}
+	else
+	{
+		i = 0;
+		while (i < argc)
+			run(argv[i++]);
+	}
 }
