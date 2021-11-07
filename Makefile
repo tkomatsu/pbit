@@ -1,4 +1,4 @@
-NAME = bit
+NAME = pbit
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -O2
 RM = rm -fr
