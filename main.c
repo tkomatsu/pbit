@@ -109,7 +109,7 @@ int	main(int argc, char **argv)
 	}
 	else
 	{
-		i = 0;
+		i = 1;
 		while (i < argc)
 			run(argv[i++]);
 	}
