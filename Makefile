@@ -14,6 +14,11 @@ $(NAME): $(OBJS)
 clean:
 	$(RM) $(NAME) $(OBJS)
 
+re: clean all
+
+debug: CFLAGS += -g3 -fsanitize=address
+debug: re
+
 install: $(NAME)
 	mv $< /usr/local/bin
 	sudo chmod 755 /usr/local/bin/$(NAME)
@@ -22,4 +27,4 @@ uninstall:
 	sudo $(RM) /usr/local/bin/$(NAME)
 	make clean
 
-.PHONY: all clean install uninstall
+.PHONY: all clean re debug install uninstall

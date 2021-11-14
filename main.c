@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdint.h>
@@ -79,10 +80,21 @@ int main(int argc, char **argv) {
 		exit(2);
 	}
 	if (argc == 1) {
-		char *line;
+		char *line = NULL;
 		size_t linecap = 0;
-		(void)getline(&line, &linecap, stdin);
-		run(strtok(line, "\t\n "));
+		ssize_t linelen;
+		while ((linelen = getline(&line, &linecap, stdin)) > 0) {
+			if (isspace(line[0])) {
+				continue;
+			}
+			run(strtok(line, "\t\n\v\f\r "));
+			char *tok;
+			while ((tok = strtok(NULL, "\t\n\v\f\r ")) != NULL) {
+				run(tok);
+			}
+			free(line);
+			line = NULL;
+		}
 	} else {
 		for (int i = 1; i < argc; ++i) {
 			run(argv[i]);
