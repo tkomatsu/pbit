@@ -10,11 +10,11 @@ static void make_bin(uint64_t n, char *box, int size, int is_negative) {
 	uint64_t i = 0;
 	uint64_t mask = (uint64_t)1 << (sizeof(int64_t) * CHAR_BIT - 1);
 	n <<= sizeof(int64_t) * CHAR_BIT - size;
+	if (is_negative) n = ~n + 1;
 	while (mask && size--) {
 		box[i++] = !!(n & mask) + '0';
 		mask >>= 1;
 	}
-	if (is_negative) box[0] = '1';
 	box[i] = '\0';
 }
 
@@ -73,6 +73,7 @@ static int help(char *cmd) {
 }
 
 int main(int argc, char **argv) {
+	if (sizeof(int) != 4) return 1;
 	if (argc == 2 && !strcmp(argv[1], "-h")) {
 		return (help(argv[0]));
 	}
