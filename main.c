@@ -77,7 +77,7 @@ static void run(char *arg) {
 }
 
 static int help(char *cmd) {
-	printf("Usage: %s [NUMBERS]...\n", cmd);
+	printf("Usage: %s [NUMBERS]...\n%13s -r [NUMBERS]...\n", cmd, cmd);
 	exit(EXIT_SUCCESS);
 }
 
