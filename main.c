@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int print_readable(const char *s);
+int (*g_printer)(const char *) = print_readable;
+
 static void make_bin(uint64_t n, char *box, int size, int is_negative) {
 	uint64_t i = 0;
 	uint64_t mask = (uint64_t)1 << (sizeof(int64_t) * CHAR_BIT - 1);
@@ -18,7 +21,7 @@ static void make_bin(uint64_t n, char *box, int size, int is_negative) {
 	box[i] = '\0';
 }
 
-int ft_getsize(uint64_t n) {
+static int ft_getsize(uint64_t n) {
 	if (n <= UINT8_MAX) {
 		return (sizeof(int8_t) * CHAR_BIT);
 	}
@@ -31,11 +34,8 @@ int ft_getsize(uint64_t n) {
 	}
 }
 
-static void ft_putbin(uint64_t n, int is_negative) {
-	char s[65];
-
-	int size = ft_getsize(n);
-	make_bin(n, s, size, is_negative);
+static int print_readable(const char *s)
+{
 	for (int i = 0; s[i]; ++i) {
 		if (i && !(i % 8))
 			printf(" | ");
@@ -44,6 +44,15 @@ static void ft_putbin(uint64_t n, int is_negative) {
 		printf("%c", s[i]);
 	}
 	puts("");
+	return (0);
+}
+
+static void ft_putbin(uint64_t n, int is_negative) {
+	char s[65];
+
+	int size = ft_getsize(n);
+	make_bin(n, s, size, is_negative);
+	g_printer(s);
 }
 
 static uint64_t ft_labs(int64_t n) {
@@ -69,17 +78,26 @@ static void run(char *arg) {
 
 static int help(char *cmd) {
 	printf("Usage: %s [NUMBERS]...\n", cmd);
-	return (0);
+	exit(EXIT_SUCCESS);
+}
+
+void options(int *argc, char ***argv)
+{
+	if (*argc == 2 && !strcmp((*argv)[1], "-h")) {
+		help((*argv)[0]);
+	}
+	if ((*argv)[1] && !strcmp((*argv)[1], "-r")) {
+		g_printer = puts;
+		(*argv)++;
+		(*argc)--;
+	}
 }
 
 int main(int argc, char **argv) {
-	if (sizeof(int) != 4) return 1;
-	if (argc == 2 && !strcmp(argv[1], "-h")) {
-		return (help(argv[0]));
-	}
 	if (ft_labs(LLONG_MIN) == ft_labs(LLONG_MAX)) {
 		exit(2);
 	}
+	options(&argc, &argv);
 	if (argc == 1) {
 		char *line = NULL;
 		size_t linecap = 0;
