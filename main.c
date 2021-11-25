@@ -93,27 +93,31 @@ void options(int *argc, char ***argv)
 	}
 }
 
+void from_stdin() {
+	char *line = NULL;
+	size_t linecap = 0;
+	ssize_t linelen;
+	while ((linelen = getline(&line, &linecap, stdin)) > 0) {
+		if (isspace(line[0])) {
+			continue;
+		}
+		run(strtok(line, "\t\n\v\f\r "));
+		char *tok;
+		while ((tok = strtok(NULL, "\t\n\v\f\r ")) != NULL) {
+			run(tok);
+		}
+		free(line);
+		line = NULL;
+	}
+}
+
 int main(int argc, char **argv) {
 	if (ft_labs(LLONG_MIN) == ft_labs(LLONG_MAX)) {
 		exit(2);
 	}
 	options(&argc, &argv);
 	if (argc == 1) {
-		char *line = NULL;
-		size_t linecap = 0;
-		ssize_t linelen;
-		while ((linelen = getline(&line, &linecap, stdin)) > 0) {
-			if (isspace(line[0])) {
-				continue;
-			}
-			run(strtok(line, "\t\n\v\f\r "));
-			char *tok;
-			while ((tok = strtok(NULL, "\t\n\v\f\r ")) != NULL) {
-				run(tok);
-			}
-			free(line);
-			line = NULL;
-		}
+		from_stdin();
 	} else {
 		for (int i = 1; i < argc; ++i) {
 			run(argv[i]);
